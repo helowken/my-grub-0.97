@@ -1,0 +1,16 @@
+#!/bin/bash
+
+os_image=device/testOS.img
+boot_dir=/mnt/xxx
+grub_dir=${boot_dir}/grub
+grub_shell=grub/grub
+root_drive="(hd1)"
+root="(hd1,0)"
+
+${grub_shell} --batch <<EOF
+device ${root_drive} ${os_image}
+root ${root}
+setup --stage2=${grub_dir}/stage2 --prefix=/grub ${root_drive}
+EOF
+
+echo
