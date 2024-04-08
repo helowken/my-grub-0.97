@@ -81,21 +81,3 @@ ENTRY(grub_longjmp)
 0:	jmp	*20(%ecx)		/* done, return... */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

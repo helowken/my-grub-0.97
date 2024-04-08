@@ -46,8 +46,6 @@ static int open_preset_menu(void) {
 	return preset_menu != 0;
 }
 
-
-
 static int read_from_preset_menu(char *buf, int maxlen) {
 	int len = grub_strlen(preset_menu + preset_menu_offset);
 
@@ -60,14 +58,10 @@ static int read_from_preset_menu(char *buf, int maxlen) {
 	return len;
 }
 
-
-
 static void close_preset_menu(void) {
 	/* Disable the preset menu. */
 	preset_menu = 0;
 }
-
-
 
 #else /* PRESET_MENU_STRING && ! SUPPORT_DISKLESS */
 
@@ -515,7 +509,7 @@ restart:
 			}
 
 			if (! auth && password) {
-				//TODO
+				/* TODO authentication is not supported now */
 			} else {
 				if (c == 'e') {
 					int new_num_entries = 0, i = 0;

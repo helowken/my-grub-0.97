@@ -39,7 +39,7 @@ asmstub.o asmstub.o: asmstub.c /usr/include/stdlib.h \
   /usr/include/unctrl.h /usr/include/curses.h \
   /usr/lib/gcc/x86_64-redhat-linux/3.4.6/include/stdbool.h \
   ../stage2/mb_header.h ../stage2/mb_info.h ../lib/device.h \
-  ../stage2/serial.h ../stage2/term.h
+  ../stage2/term.h
 
 /usr/include/stdlib.h:
 
@@ -204,7 +204,5 @@ asmstub.o asmstub.o: asmstub.c /usr/include/stdlib.h \
 ../stage2/mb_info.h:
 
 ../lib/device.h:
-
-../stage2/serial.h:
 
 ../stage2/term.h:

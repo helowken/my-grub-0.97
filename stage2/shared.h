@@ -614,11 +614,6 @@ extern int count_lines;
 extern int use_pager;
 #endif
 
-#ifndef NO_DECOMPRESSION
-extern int no_decompression;
-extern int compressed_file;
-#endif
-
 /* instrumentation variables */
 extern void (*disk_read_hook) (int, int, int);
 extern void (*disk_read_func) (int, int, int);
@@ -912,12 +907,6 @@ int get_based_digit (int c, int base);
 int safe_parse_maxint (char **str_ptr, int *myint_ptr);
 int memcheck (int start, int len);
 void grub_putstr (const char *str);
-
-#ifndef NO_DECOMPRESSION
-/* Compression support. */
-int gunzip_test_header (void);
-int gunzip_read (char *buf, int len);
-#endif /* NO_DECOMPRESSION */
 
 int rawread (int drive, int sector, int byte_offset, int byte_len, char *buf);
 int devread (int sector, int byte_offset, int byte_len, char *buf);

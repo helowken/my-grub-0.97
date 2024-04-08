@@ -99,10 +99,6 @@ static struct AddrRangeDesc fakemap[3] = {
 };
 
 
-
-
-
-
 /* A big problem is that the memory areas aren't guaranteed to be:
  * (1) contiguous, (2) sorted in ascending order, or (3) non-overlapping.
  * Thus this kludge. */

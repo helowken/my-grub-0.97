@@ -60,7 +60,6 @@ int grub_stage2(void);
 #define WITHOUT_LIBC_STUBS 1
 #include <shared.h>
 #include <device.h>
-#include <serial.h>
 #include <term.h>
 
 /* Simulated memory sizes. */
@@ -91,9 +90,6 @@ static jmp_buf env_for_exit;
 
 /* The current color for console. */
 int console_current_color = A_NORMAL;
-
-/* The file descriptor for a serial device. */
-static int serial_fd = -1;
 
 /* The file name of a serial device. */
 static char *serial_device = 0;
@@ -196,9 +192,6 @@ int grub_stage2() {
 			close(disks[i].flags);
 		}
 	}
-
-	if (serial_fd >= 0) 
-	  close(serial_fd);
 
 	/* Release memory. */
 	restore_device_map(device_map);

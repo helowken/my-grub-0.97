@@ -22,11 +22,6 @@
 #include <shared.h>
 #include <filesys.h>
 
-
-
-
-
-
 #ifdef GRUB_UTIL
 # include <device.h>
 #endif /* GRUB_UTIL */
@@ -51,37 +46,6 @@ struct fsys_entry fsys_table[NUM_FSYS + 1] = {
 # endif
 	{0, 0, 0, 0, 0, 0}
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* These have the same format as "boot_drive" and "install_partition", but
@@ -130,8 +94,6 @@ static inline unsigned long log2i(unsigned long word) {
 			: "r" (word));
 	return word;
 }
-
-
 
 int rawread(int drive, int sector, int byte_offset, int byte_len, char *buf) {
 	int slen, sectors_per_vtrack;
@@ -215,7 +177,7 @@ int rawread(int drive, int sector, int byte_offset, int byte_len, char *buf) {
 				buf_track = track;
 			}
 
-			/* TODO EZD */
+			/* TODO EZD is not supported now */
 		}
 
 		if (size > ((num_sect << sector_size_bits) - byte_offset))
@@ -253,43 +215,6 @@ int rawread(int drive, int sector, int byte_offset, int byte_len, char *buf) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int devread(int sector, int byte_offset, int byte_len, char *buf) {
 	/* 
 	 * Check partition boundaries
@@ -323,9 +248,6 @@ int devread(int sector, int byte_offset, int byte_len, char *buf) {
 	return rawread(current_drive, part_start + sector, byte_offset,
 				byte_len, buf);
 }
-
-
-
 
 
 #ifndef STAGE1_5
@@ -400,9 +322,6 @@ static int sane_partition() {
 #endif /* ! STAGE1_5 */
 
 
-
-
-
 /* Read the SUPERBLOCK to buffer.
  */
 static void attempt_mount() {
@@ -424,121 +343,7 @@ static void attempt_mount() {
 }
 
 
-
-
 #ifndef STAGE1_5
-/* Turn on the active flag for the partition SAVED_PARTITION in the
- * drive SAVED_DRIVE. If an error occurs, return zero, otherwise return
- * non-zero. */
-int make_saved_active() {
-	//TODO
-	return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Hide/Unhide CURRENT_PARTITION. */
-int set_partition_hidden_flag(int hidden) {
-	//TODO
-	return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 static void check_and_print_mount() {
 	attempt_mount();
 	if (errnum == ERR_FSYS_MOUNT)
@@ -548,8 +353,6 @@ static void check_and_print_mount() {
 	print_error();
 }
 #endif /* ! STAGE1_5 */
-
-
 
 
 /* Get the information on next partition on the drive DRIVE.
@@ -730,7 +533,7 @@ int real_open_partition(int flags) {
 					if (! IS_PC_SLICE_TYPE_BSD(current_slice))
 					  check_and_print_mount();
 					else {
-						//TODO BSD
+						/* TODO BSD is not supported now */
 					}
 				} else {
 					if (bsd_part != 0xFF) {
@@ -777,121 +580,9 @@ int real_open_partition(int flags) {
 	return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int open_partition() {
 	return real_open_partition(0);
 }
-
-
-
 
 #ifndef STAGE1_5
 /* XX used for device completion in 'set_device' and 'print_completions' */
@@ -1037,40 +728,6 @@ char *set_device(char *device) {
 #endif /* STAGE1_5 */
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
  * This performs a "mount" on the current device, both drive and partition
  * number.
@@ -1087,9 +744,6 @@ int open_device() {
 
 	return 1;
 }
-
-
-
 
 #ifndef STAGE1_5
 int set_bootdev(int hdbias) {
@@ -1140,10 +794,6 @@ int set_bootdev(int hdbias) {
 				((saved_partition >> 8) & 0xFF));
 }
 #endif /* ! STAGE1_5 */
-
-
-
-
 
 
 static char *setup_part(char *filename) {
@@ -1207,7 +857,6 @@ static char *setup_part(char *filename) {
 }
 
 
-
 #ifndef STAGE1_5
 /* 
  * This prints the filesystem type or gives relevant information.
@@ -1229,7 +878,6 @@ void print_fsys_type() {
 	}
 }
 #endif /* ! STAGE1_5 */
-
 
 
 #ifndef STAGE1_5
@@ -1259,11 +907,6 @@ void print_a_completion(char *name) {
 
 	unique++;
 }
-
-
-
-
-
 
 
 /*
@@ -1450,17 +1093,12 @@ int print_completions(int is_filename, int is_completion) {
 #endif /* ! STAGE1_5 */
 
 
-
 /*
  * This is the generic file open function. 
  * If the filename is "(hd0)1+16,20+5", set BLOCK_FILE to 1 and parse
  * the ranges(1+16,20+5) to BLK records.
  */
 int grub_open(char *filename) {
-#ifndef NO_DECOMPRESSION
-	compressed_file = 0;
-#endif /* ! NO_DECOMPRESSION */
-
 	/* if any "dir" function uses/sets filepos, it must
 	 * set it to zero before retruning if opening a file! */
 	filepos = 0;
@@ -1534,12 +1172,7 @@ int grub_open(char *filename) {
 			BLK_CUR_FILEPOS = 0;
 			BLK_CUR_BLKLIST = BLK_BLKLIST_START;
 			BLK_CUR_BLKNUM = 0;
-
-# ifndef NO_DECOMPRESSION
-			return gunzip_test_header();
-# else /* NO_DECOMPRESSION */
 			return 1;
-# endif /* ! NO_DECOMPRESSION */
 		}
 #else /* NO_BLOCK_FILES */
 		errnum = ERR_BAD_FILENAME;
@@ -1555,11 +1188,7 @@ int grub_open(char *filename) {
 #endif
 
 	if (!errnum && (*(fsys_table[fsys_type].dir_func))(filename)) {
-#ifndef NO_DECOMPRESSION
-		return gunzip_test_header();
-#else /* NO_DECOMPRESSION */
 		return 1;
-#endif /* ! NO_DECOMPRESSION */
 	}
 
 	return 0;
@@ -1584,11 +1213,6 @@ int grub_read(char *buf, int len) {
 		errnum = ERR_FILELENGTH;
 		return 0;
 	}
-
-#ifndef NO_DECOMPRESSION
-	if (compressed_file)
-	  return gunzip_read(buf, len);
-#endif /* ! NO_DECOMPRESSION */
 
 #ifndef NO_BLOCK_FILES
 	if (block_file) {
@@ -1666,10 +1290,6 @@ int grub_seek(int offset) {
 }
 
 int dir(char *dirname) {
-#ifndef NO_DECOMPRESSION
-	compressed_file = 0;
-#endif /* ! NO_DECOMPRESSION */
-
 	if (!(dirname = setup_part(dirname)))
 	  return 0;
 
@@ -1689,51 +1309,6 @@ int dir(char *dirname) {
 }
 #endif /* ! STAGE1_5 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void grub_close() {
 #ifndef NO_BLOCK_FILES
 	if (block_file)
@@ -1743,733 +1318,5 @@ void grub_close() {
 	if (fsys_table[fsys_type].close_func != 0)
 	  (*(fsys_table[fsys_type].close_func))();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

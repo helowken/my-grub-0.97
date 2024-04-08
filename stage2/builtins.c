@@ -26,11 +26,6 @@
 #include <filesys.h>
 #include <term.h>
 
-
-
-
-
-
 #ifdef SUPPORT_SERIAL
 # include <serial.h>
 # include <terminfo.h>
@@ -39,8 +34,6 @@
 #ifdef GRUB_UTIL
 # include <device.h>
 #else /* ! GRUB_UTIL */
-# include <apic.h>
-# include <smp-imps.h>
 #endif /* ! GRUB_UTIL */
 
 #ifdef USE_MD5_PASSWORDS
@@ -73,11 +66,6 @@ int auth = 0;
 int grub_timeout = -1;
 /* Whether to show the menu or not. */
 int show_menu = 1;
-/* The BIOS drive map. */
-//static unsigned short bios_drive_map[DRIVE_MAP_SIZE + 1];
-
-
-
 
 
 /* Initialize the data for builtins. */
@@ -202,8 +190,9 @@ static int boot_func(char *arg, int flags) {
 	/* Clear the int15 handler if we can boot the kernel successfully.
 	 * This assumes that the boot code never fails only if KERNEL_TYPE is
 	 * not KERNEL_TYPE_NONE. Is this assumption is bad? */
-	if (kernel_type != KERNEL_TYPE_NONE)
-	  unset_int15_handler();
+	if (kernel_type != KERNEL_TYPE_NONE) {
+		/* TODO unset_int15_handler() is not supported now */
+	}
 
 	switch (kernel_type) {
 		case KERNEL_TYPE_LINUX:
@@ -959,31 +948,6 @@ static struct builtin builtin_hiddenmenu = {
 };
 
 
-/* impsprobe */
-static int impsprobe_func(char *arg, int flags) {
-#ifdef GRUB_UTIL
-	/* In the grub shell, we cannot probe IMPS. */
-	errnum = ERR_UNRECOGNIZED;
-	return 1;
-#else /* ! GRUB_UTIL */
-	//TODO if (! imps_probe()) 
-	  printf(" No MPS information found or probe failed\n");
-
-	return 0;
-#endif /* ! GRUB_UTIL */
-}
-
-static struct builtin builtin_impsprobe = {
-	"impsprobe",
-	impsprobe_func,
-	BUILTIN_CMDLINE,
-	"impsprobe",
-	"Probe the Intel Multiprocessor Specification 1.1 or 1.4"
-	" configuration table and boot the various CPUs which are found into"
-	" a tight loop."
-};
-
-
 /* initrd */
 static int initrd_func(char *arg, int flags) {
 	switch (kernel_type) {
@@ -1131,11 +1095,6 @@ static int install_func(char *arg, int flags) {
 		errnum = 0;
 	} else
 	  ptr = skip_to(0, addr);
-
-#ifndef NO_DECOMPRESSION
-	/* Do not decompress Stage 1 or Stage 2. */
-	no_decompression = 1;
-#endif /* NO_DECOMPRESSION */
 
 	/* Read Stage 1. */
 	is_open = grub_open(stage1_file);
@@ -1465,10 +1424,6 @@ fail:
 	  grub_close();
 
 	disk_read_hook = 0;
-
-#ifndef NO_DECOMPRESSION
-	no_decompression = 0;
-#endif /* ! NO_DECOMPRESSION */
 
 	return errnum;
 }
@@ -2255,7 +2210,7 @@ struct builtin *builtin_table[] = {
 	&builtin_help,
 	&builtin_hiddenmenu,
 //	&builtin_hide,
-	&builtin_impsprobe,
+//	&builtin_impsprobe,
 	&builtin_initrd,
 //	&builtin_install,
 	&builtin_ioprobe,

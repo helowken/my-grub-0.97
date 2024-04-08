@@ -75,59 +75,6 @@ struct hd_geometry {
 #endif /* __linux__ */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define WITHOUT_LIBC_STUBS	1
 #include <shared.h>
 #include <device.h>
@@ -222,141 +169,6 @@ file_disk:
 	  close(fd);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* These three functions are quite different among OSes. */
 static void get_floppy_disk_name(char *name, int unit) {
 #if defined(__linux__)
@@ -368,40 +180,6 @@ static void get_floppy_disk_name(char *name, int unit) {
 #endif
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 static void get_ide_disk_name(char *name, int unit) {
 #if defined(__linux__)
 	sprintf(name, "/dev/hd%c", unit + 'a');
@@ -411,37 +189,6 @@ static void get_ide_disk_name(char *name, int unit) {
 	*name = 0;
 #endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static void get_scsi_disk_name(char *name, int unit) {
 #if defined(__linux__)
@@ -453,46 +200,7 @@ static void get_scsi_disk_name(char *name, int unit) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifdef __linux__
-
-
-
-
-
-
-
 static void get_ataraid_disk_name(char *name, int unit) {
 	sprintf(name, "/dev/ataraid/d%c", unit + '0');
 }
@@ -562,13 +270,6 @@ int check_device(const char *device) {
 	fclose(fp);
 	return 1;
 }
-
-
-
-
-
-
-
 
 
 /* Read mapping information from FP, and write it to MAP. */
@@ -680,18 +381,6 @@ static int read_device_map(FILE *fp, char **map, const char *map_file) {
 
 	return 1;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* Initialize the device map MAP. *MAP will be allocated from the heap
@@ -817,23 +506,6 @@ int init_device_map(char ***map, const char *map_file, int floppy_disks) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Restore the memory consumed for MAP. */
 void restore_device_map(char **map) {
 	int i;
@@ -860,7 +532,7 @@ int is_disk_device(char **map, int drive) {
 
 int write_to_partition(char **map, int drive, int partition,
 			int sector, int size, const char *buf) {
-	printf("TODO write_to_partition\n");
+	printf("TODO write_to_partition is unsupported now\n");
 
 	return 1;
 }

@@ -18,20 +18,6 @@
  */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* 
  * INT-15, AX=E820 style "AddressRangeDescriptor"
  * ...with a "size" parameter on the front which is the structure size - 4,
@@ -90,7 +76,6 @@ struct apm_info {
 	unsigned short cseg_16_len;
 	unsigned short dseg_16_len;
 };
-
 
 
 /* 
@@ -163,12 +148,6 @@ struct multiboot_info {
 };
 
 
-
-
-
-
-
-
 /*
  * Flags to be set in the 'flags' parameter above
  */
@@ -206,12 +185,5 @@ struct multiboot_info {
 
 /* Is there video information? */
 #define MB_INFO_VIDEO_INFO		0x00000800
-
-
-
-
-
-
-
 
 

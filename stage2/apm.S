@@ -78,7 +78,7 @@ ENTRY(get_apm_info)
 	/* BIOS data segment */
 	movw	%dx, ABS(EXT_C(apm_bios_info)) + 10
 	/* BIOS code segment length */
-	movl	%esi, ABS(EXT_C(apm_bios_info)) + 12	/*TODO */
+	movl	%esi, ABS(EXT_C(apm_bios_info)) + 12	/* TODO maybe something wrong */
 	/* BIOS data segment length */
 	movw	%di, ABS(EXT_C(apm_bios_info)) + 16
 

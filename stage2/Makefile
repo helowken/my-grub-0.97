@@ -24,12 +24,11 @@ AR = ar
 ARFLAGS = cru
 libgrub_a_AR = $(AR) $(ARFLAGS)
 NETBOOT_FLAGS = 
-SERIAL_FLAGS = -DSUPPORT_SERIAL=1
 HERCULES_FLAGS = -DSUPPORT_HERCULES=1
 #TODO STAGE2_CFLAGS = -Os
 STAGE2_CFLAGS = 
 STAGE2_COMPILE = $(STAGE2_CFLAGS) -fno-builtin -nostdinc \
-	$(NETBOOT_FLAGS) $(SERIAL_FLAGS) $(HERCULES_FLAGS)
+	$(NETBOOT_FLAGS) $(HERCULES_FLAGS)
 STAGE1_5_LINK = -nostdlib -Wl,-N -Wl,-Ttext -Wl,2000
 STAGE1_5_COMPILE = $(STAGE2_COMPILE) -DNO_DECOMPRESSION=1 -DSTAGE1_5=1
 FSYS_CFLAGS = -DFSYS_EXT2FS=1
@@ -53,17 +52,12 @@ INCLUDES = -I$(top_srcdir)/stage1
 # The library for /sbin/grub.
 noinst_LIBRARIES = libgrub.a
 libgrub_a_CFLAGS = $(GRUB_CFLAGS) -I$(top_srcdir)/lib \
-        -DGRUB_UTIL=1 -DFSYS_EXT2FS=1 -DFSYS_FAT=1 -DFSYS_FFS=1 \
-        -DFSYS_ISO9660=1 -DFSYS_JFS=1 -DFSYS_MINIX=1 -DFSYS_REISERFS=1 \
-        -DFSYS_UFS2=1 -DFSYS_VSTAFS=1 -DFSYS_XFS=1 \
-        -DUSE_MD5_PASSWORDS=1 -DSUPPORT_SERIAL=1 -DSUPPORT_HERCULES=1
+        -DGRUB_UTIL=1 -DFSYS_EXT2FS=1 -DSUPPORT_HERCULES=1
 
 libgrub_a_OBJECTS = libgrub_a-boot.$(OBJEXT) \
         libgrub_a-builtins.$(OBJEXT) libgrub_a-char_io.$(OBJEXT) \
         libgrub_a-cmdline.$(OBJEXT) libgrub_a-common.$(OBJEXT) \
         libgrub_a-disk_io.$(OBJEXT) libgrub_a-fsys_ext2fs.$(OBJEXT) \
-        libgrub_a-gunzip.$(OBJEXT) \
-		libgrub_a-serial.$(OBJEXT) \
         libgrub_a-stage2.$(OBJEXT)
 
 
@@ -101,14 +95,7 @@ am_pre_stage2_exec_OBJECTS = pre_stage2_exec-asm.$(OBJEXT) \
 	pre_stage2_exec-console.$(OBJEXT) \
 	pre_stage2_exec-disk_io.$(OBJEXT) \
 	pre_stage2_exec-fsys_ext2fs.$(OBJEXT) \
-	pre_stage2_exec-gunzip.$(OBJEXT) \
-	pre_stage2_exec-hercules.$(OBJEXT) \
-	pre_stage2_exec-md5.$(OBJEXT) \
-	pre_stage2_exec-serial.$(OBJEXT) \
-	pre_stage2_exec-smp-imps.$(OBJEXT) \
-	pre_stage2_exec-stage2.$(OBJEXT) \
-	pre_stage2_exec-terminfo.$(OBJEXT) \
-	pre_stage2_exec-tparm.$(OBJEXT)
+	pre_stage2_exec-stage2.$(OBJEXT)
 pre_stage2_exec_OBJECTS = $(am_pre_stage2_exec_OBJECTS)
 pre_stage2_exec_CFLAGS = $(STAGE2_COMPILE) $(FSYS_CFLAGS)
 pre_stage2_exec_CCASFLAGS = $(STAGE2_COMPILE) $(FSYS_CFLAGS)
@@ -154,14 +141,8 @@ libgrub_a-disk_io.o: disk_io.c
 libgrub_a-fsys_ext2fs.o: fsys_ext2fs.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) $(libgrub_a_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/libgrub_a-fsys_ext2fs.Tpo" -c -o $@ $<
 
-libgrub_a-gunzip.o: gunzip.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) $(libgrub_a_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/libgrub_a-gunzip.Tpo" -c -o $@ $<
-
 libgrub_a-stage2.o: stage2.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) $(libgrub_a_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/libgrub_a-stage2.Tpo" -c -o $@ $<
-
-libgrub_a-serial.o: serial.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) $(libgrub_a_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/libgrub_a-serial.Tpo" -c -o $@ $<
 
 
 
@@ -256,30 +237,8 @@ pre_stage2_exec-disk_io.o: disk_io.c
 pre_stage2_exec-fsys_ext2fs.o: fsys_ext2fs.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-fsys_ext2fs.Tpo" -c -o $@ $<
 
-pre_stage2_exec-gunzip.o: gunzip.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-gunzip.Tpo" -c -o $@ $<
-
-pre_stage2_exec-hercules.o: hercules.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-hercules.Tpo" -c -o $@ $<
-
-pre_stage2_exec-md5.o: md5.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-md5.Tpo" -c -o $@ $<
-
-pre_stage2_exec-serial.o: serial.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-serial.Tpo" -c -o $@ $<
-
-pre_stage2_exec-smp-imps.o: smp-imps.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-smp-imps.Tpo" -c -o $@ $<
-
 pre_stage2_exec-stage2.o: stage2.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-stage2.Tpo" -c -o $@ $<
-
-pre_stage2_exec-terminfo.o: terminfo.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-terminfo.Tpo" -c -o $@ $<
-
-pre_stage2_exec-tparm.o: tparm.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pre_stage2_exec_CFLAGS) $(CFLAGS) -MT $@ -MD -MP -MF "$(DEPDIR)/pre_stage2_exec-tparm.Tpo" -c -o $@ $<
-
 
 
 
@@ -287,7 +246,7 @@ pre_stage2_exec-tparm.o: tparm.c
 
 clean:
 	-rm -f $(CLEANFILES)
-	-rm -f *.o
+	-rm -f *.o *.exec
 
 .exec:
 	$(OBJCOPY) -O binary $< $@

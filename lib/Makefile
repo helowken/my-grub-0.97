@@ -20,8 +20,7 @@ noinst_LIBRARIES = libcommon.a
 LIBRARIES = $(noinst_LIBRARIES)
 AM_CFLAGS = $(GRUB_CFLAGS) -I$(top_srcdir)/stage2 \
 			-I$(top_srcdir)/stage1
-am_libcommon_a_OBJECTS = getopt.$(OBJEXT) getopt1.$(OBJEXT) \
-						 device.$(OBJEXT)
+am_libcommon_a_OBJECTS = device.$(OBJEXT)
 libcommon_a_LIBADD = 
 libcommon_a_OBJECTS = $(am_libcommon_a_OBJECTS)
 

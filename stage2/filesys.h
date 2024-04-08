@@ -20,35 +20,6 @@
 
 #include "pc_slice.h"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifdef FSYS_EXT2FS
 #define FSYS_EXT2FS_NUM 1
 int ext2fs_mount(void);
@@ -58,69 +29,10 @@ int ext2fs_dir(char *dirname);
 #define FSYS_EXT2FS_NUM 0
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef NUM_FSYS
 #define NUM_FSYS	\
 	(FSYS_EXT2FS_NUM)
 #endif
-
-
 
 /* defines for the block filesystem info area */
 #ifndef NO_BLOCK_FILES

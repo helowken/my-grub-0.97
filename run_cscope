@@ -1,9 +1,9 @@
 #!/bin/bash
 
-SRC_DIR="/home/test/grub-0.97"
+SRC_DIR="/home/test/my-grub-0.97"
 DIR="/home/test/cscope/grub"
 
-files=cscope.files
+files=$DIR/cscope.files
 
 set -x
 echo "Finding relevant source files..."

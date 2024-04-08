@@ -239,8 +239,6 @@ ENTRY(grub_reboot)
 	.code32
 
 
-/* TODO grub_halt() */
-
 /* 
  * track_int13 (int drive)
  *
@@ -426,26 +424,6 @@ int1_handler:
 ENTRY(io_map)
 	.space	(IO_MAP_SIZE + 1) * 2
 
-
-/* TODO set_int15_handler */
-
-/* 
- * unset_int15_handler (void)
- *
- * Restore the original int15 handler
- */
-ENTRY(unset_int15_handler)
-	/* TODO */
-	ret
-
-
-/* TODO init15_handler */
-
-/* TODO set_int13_handler(map) */
-
-/* TODO int13_handler */
-
-/* TODO chain_stage1 */
 #endif /* ! STAGE1_5 */
 
 
@@ -1274,8 +1252,6 @@ gloop2ret:
 	ret
 
 
-/* TODO patch_code */
-
 /* 
  * linux_boot()
  *
@@ -1349,8 +1325,6 @@ linux_setup_seg:
 	.word	0
 	.code32
 
-
-/* TODO multi_boot */
 #endif /* ! STAGE1_5 */
 
 
@@ -1790,9 +1764,6 @@ gottime:
 
 	pop	%ebp
 	ret
-
-
-/* TODO currticks() */
 
 #endif /* ! STAGE1_5 */
 

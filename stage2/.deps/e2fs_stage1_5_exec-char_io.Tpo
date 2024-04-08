@@ -1,6 +1,6 @@
 e2fs_stage1_5_exec-char_io.o e2fs_stage1_5_exec-char_io.o: char_io.c \
   ./shared.h ../config.h ../stage1/stage1.h ./mb_header.h ./mb_info.h \
-  ./term.h ./serial.h
+  ./term.h
 
 ./shared.h:
 
@@ -13,5 +13,3 @@ e2fs_stage1_5_exec-char_io.o e2fs_stage1_5_exec-char_io.o: char_io.c \
 ./mb_info.h:
 
 ./term.h:
-
-./serial.h:

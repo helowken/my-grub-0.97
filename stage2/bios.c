@@ -139,8 +139,7 @@ static int get_cdinfo(int drive, struct geometry *geometry) {
 			geometry->total_sectors = MAXINT;
 			return 1;
 		} else {
-			/* Floppy or hard-disk emulation */
-			//TODO
+			/* TODO Floppy or hard-disk emulation is not supported now */
 
 		}
 	}

@@ -21,13 +21,6 @@
  *  MultiBoot Header description
  */
 
-
-
-
-
-
-
-
 /* The entire multiboot_header must be contained 
  * within the first MULTIBOOT_SEARCH bytes of the kernel image.
  */

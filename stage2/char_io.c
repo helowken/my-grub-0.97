@@ -22,13 +22,6 @@
 #include <term.h>
 
 
-
-
-
-#ifdef SUPPORT_SERIAL
-# include <serial.h>
-#endif /* SUPPORT_SERIAL */
-
 #ifndef STAGE1_5
 struct term_entry term_table[] = {
 	{
@@ -44,41 +37,9 @@ struct term_entry term_table[] = {
 		console_setcolor,
 		console_setcursor
 	},
-#ifdef SUPPORT_SERIAL
-	{
-		"serial",
-		/* A serial device must be initialized. */
-		TERM_NEED_INIT,
-		serial_putchar,
-		serial_checkkey,
-		serial_getkey,
-		serial_getxy,
-		serial_gotoxy,
-		serial_cls,
-		serial_setcolorstate,
-		0,
-		0
-	},
-#endif /* SUPPORT_SERIAL */
 	/* This must be the last entry. */
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* This must be console. */
 struct term_entry *current_term = term_table;
@@ -96,9 +57,6 @@ void print_error() {
 	  printf("Error %u\n", errnum);
 #endif /* ! STAGE1_5 */
 }
-
-
-
 
 char *convert_to_ascii(char *buf, int c, ...) {
 	unsigned long num = *((&c) + 1), mult = 10;
@@ -134,20 +92,11 @@ char *convert_to_ascii(char *buf, int c, ...) {
 	return ptr;
 }
 
-
-
-
-
-
-
-
-
 void grub_putstr(const char *str) {
 	while (*str) {
 		grub_putchar(*str++);
 	}
 }
-
 
 void grub_printf(const char *format, ...) {
 	int *dataptr = (int *) (void *) &format;
@@ -183,9 +132,6 @@ void grub_printf(const char *format, ...) {
 		}
 	}
 }
-
-
-
 
 #ifndef STAGE1_5
 int grub_sprintf(char *buffer, const char *format, ...) {
@@ -229,18 +175,12 @@ int grub_sprintf(char *buffer, const char *format, ...) {
 	return bp - buffer;
 }
 
-
-
-
-
 void init_page() {
 	cls();
 
 	grub_printf("\n    GNU GRUB  version %s  (%dK lower / %dK upper memory)\n\n",
 			version_string, mbi.mem_lower, mbi.mem_upper);
 }
-
-
 
 /* The number of the history entries. */
 static int num_history = 0;
@@ -254,8 +194,6 @@ static char *get_history(int no) {
 	return (char *) HISTORY_BUF + MAX_CMDLINE * no;
 }
 
-
-
 /* Add CMDLINE to the history buffer. */
 static void add_history(const char *cmdline, int no) {
 	grub_memmove((char *) HISTORY_BUF + MAX_CMDLINE * (no + 1),
@@ -265,8 +203,6 @@ static void add_history(const char *cmdline, int no) {
 	if (num_history < HISTORY_SIZE)
 	  num_history++;
 }
-
-
 
 static int real_get_cmdline(char *prompt, char *cmdline, int maxlen,
 							int echo_char, int readline) {
@@ -736,505 +672,6 @@ static int real_get_cmdline(char *prompt, char *cmdline, int maxlen,
 	return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Don't use this with a MAXLEN greater than 1600 or so!  The problem
  * is that GET_CMDLINE depends on the everything fitting on the screen
  * at once.  So, the whole screen is about 2000 characters, minus the
@@ -1299,12 +736,6 @@ int get_cmdline(char *prompt, char *cmdline, int maxlen,
 	return ret;
 }
 
-
-
-
-
-
-
 int safe_parse_maxint(char **str_ptr, int *myint_ptr) {
 	char *ptr = *str_ptr;	
 	int myint = 0;
@@ -1351,13 +782,6 @@ int safe_parse_maxint(char **str_ptr, int *myint_ptr) {
 
 	return 1;
 }
-
-
-
-
-
-
-
 #endif /* ! STAGE1_5 */
 
 #if !defined(STAGE1_5) || defined(FSYS_FAT)
@@ -1368,8 +792,6 @@ int grub_tolower(int c) {
 	return c;
 }
 #endif	/* ! STAGE1_5 || FSYS_FAT */
-
-
 
 int grub_isspace(int c) {
 	switch (c) {
@@ -1385,9 +807,6 @@ int grub_isspace(int c) {
 	return 0;
 }
 
-
-
-
 #if !defined(STAGE1_5) || defined(FSYS_ISO9660)
 int grub_memcmp(const char *s1, const char *s2, int n) {
 	while (n) {
@@ -1402,10 +821,6 @@ int grub_memcmp(const char *s1, const char *s2, int n) {
 	return 0;
 }
 #endif	/* ! STAGE1_5 || FSYS_ISO9660 */
-
-
-
-
 
 #ifndef STAGE1_5
 int grub_strncat(char *s1, const char *s2, int n) {
@@ -1426,14 +841,6 @@ int grub_strncat(char *s1, const char *s2, int n) {
 }
 #endif /* ! STAGE1_5 */
 
-
-
-
-
-
-
-
-
 #if !defined(STAGE1_5) || defined(FSYS_VSTAFS)
 int grub_strcmp(const char *s1, const char *s2) {
 	while (*s1 || *s2) {
@@ -1448,23 +855,16 @@ int grub_strcmp(const char *s1, const char *s2) {
 }
 #endif /* ! STAGE1_5 || FSYS_VSTAFS */
 
-
-
-
-
 #ifndef STAGE1_5
 /* Wait for a keypress and return its code. */
 int getkey() {
 	return current_term->getkey();
 }
 
-
-
 /* Check if a key code is available. */
 int checkkey() {
 	return current_term->checkkey();
 }
-
 
 #endif /* ! STAGE1_5 */
 
@@ -1527,26 +927,14 @@ void grub_putchar(int c) {
 #endif /* STAGE1_5 */
 }
 
-
-
-
-
-
-
-
-
 #ifndef STAGE1_5
 void gotoxy(int x, int y) {
 	current_term->gotoxy(x, y);
 }
 
-
-
 int getxy() {
 	return current_term->getxy();
 }
-
-
 
 void cls() {
 	/* If the terminal is dumb, there is no way to clean the terminal. */
@@ -1556,16 +944,12 @@ void cls() {
 	  current_term->cls();
 }
 
-
-
 int setcursor(int on) {
 	if (current_term->setcursor)
 	  return current_term->setcursor(on);
 
 	return 1;
 }
-
-
 #endif /* ! STAGE1_5 */
 
 int substring(const char *s1, const char *s2) {
@@ -1584,9 +968,6 @@ int substring(const char *s1, const char *s2) {
 	return 1;
 }
 
-
-
-
 #ifndef STAGE1_5
 /* Terminate the string STR with NUL. */
 int nul_terminate(char *str) {
@@ -1600,7 +981,6 @@ int nul_terminate(char *str) {
 	*str = 0;
 	return ch;
 }
-
 
 char *grub_strstr(const char *s1, const char *s2) {
 	while (*s1) {
@@ -1622,8 +1002,6 @@ char *grub_strstr(const char *s1, const char *s2) {
 	return 0;
 }
 
-
-
 int grub_strlen(const char *str) {
 	int len = 0;
 
@@ -1633,9 +1011,7 @@ int grub_strlen(const char *str) {
 
 	return len;
 }
-
 #endif /* ! STAGE1_5 */
-
 
 int memcheck(int addr, int len) {
 #ifdef GRUB_UTIL
@@ -1674,14 +1050,6 @@ int memcheck(int addr, int len) {
 	return ! errnum;
 }
 
-
-
-
-
-
-
-
-
 void *grub_memmove(void *to, const void *from, int len) {
 	if (memcheck((int) to, len)) {
 		int d0, d1, d2;
@@ -1709,15 +1077,6 @@ void *grub_memmove(void *to, const void *from, int len) {
 	return errnum ? NULL : to;
 }
 
-
-
-
-
-
-
-
-
-
 void *grub_memset(void *start, int c, int len) {
 	char *p = start;
 	if (memcheck((int) start, len)) {
@@ -1728,18 +1087,12 @@ void *grub_memset(void *start, int c, int len) {
 	return errnum ? NULL : start;
 }
 
-
-
-
-
 #ifndef STAGE1_5
 char *grub_strcpy(char *dest, const char *src) {
 	grub_memmove(dest, src, grub_strlen(src) + 1);
 	return dest;
 }
 #endif /* ! STAGE1_5 */
-
-
 
 #ifndef GRUB_UTIL
 # undef memcpy

@@ -316,10 +316,6 @@ int load_initrd(char *initrd) {
 	struct linux_kernel_header *lh = 
 			(struct linux_kernel_header *) (cur_addr - LINUX_SETUP_MOVE_SIZE);
 
-#ifndef NO_DECOMPRESSION
-	no_decompression = 1;
-#endif /* ! NO_DECOMPRESSION */
-
 	if (! grub_open(initrd))
 	  goto fail;
 
@@ -356,10 +352,6 @@ int load_initrd(char *initrd) {
 	grub_close();
 
 fail:
-#ifndef NO_DECOMPRESSION
-	no_decompression = 0;
-#endif /* ! NO_DECOMPRESSION */
-
 	return ! errnum;
 }
 

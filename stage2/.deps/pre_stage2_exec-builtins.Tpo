@@ -1,7 +1,6 @@
 pre_stage2_exec-builtins.o pre_stage2_exec-builtins.o: builtins.c \
   ./shared.h ../config.h ../stage1/stage1.h ./mb_header.h ./mb_info.h \
-  ./filesys.h ./pc_slice.h ./term.h ./serial.h ./terminfo.h ./apic.h \
-  ./smp-imps.h
+  ./filesys.h ./pc_slice.h ./term.h
 
 ./shared.h:
 
@@ -18,11 +17,3 @@ pre_stage2_exec-builtins.o pre_stage2_exec-builtins.o: builtins.c \
 ./pc_slice.h:
 
 ./term.h:
-
-./serial.h:
-
-./terminfo.h:
-
-./apic.h:
-
-./smp-imps.h:
