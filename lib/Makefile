@@ -35,9 +35,9 @@ all-am: Makefile $(LIBRARIES)
 	$(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<
 
 libcommon.a: $(libcommon_a_OBJECTS) $(libcommon_a_DEPENDENCIES)
-	-rm -f libcommon.a
-	$(libcommon_a_AR) libcommon.a $(libcommon_a_OBJECTS) $(libcommon_a_LIBADD)
-	$(RANLIB) libcommon.a
+	-rm -f $@
+	$(libcommon_a_AR) $@ $(libcommon_a_OBJECTS) $(libcommon_a_LIBADD)
+	$(RANLIB) $@
 
 
 .PHONY: clean

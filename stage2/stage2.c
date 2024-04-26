@@ -84,14 +84,24 @@ static void close_preset_menu(void) {
 #define	MENU_HINT_Y	(MENU_BOTTOM + MENU_COMMENT_HEIGHT + 2)
 
 static char *get_entry(char *list, int num, int nested) {
-/* entries format (2 entries below):
+/* There are two formats of list.
+ * `format 1' supports `nested = 0'.
+ * `format 2' supports `nested = 1'.
+ * 
+ * format 1 (2 entries belmw):
  *   xxxx \0
- *   xxxx \0
- *   \0		(when nested=1, this is the separator.)
  *   yyyy \0
- *   yyyy \0
- *   \0		(when nested=1, this is the separator.)
- *   \0
+ *   \0		(list terminator)
+ *
+ *
+ * format 2 (2 entries below):
+ *   xxx1 \0
+ *   xxx2 \0
+ *   \0		(block terminator)
+ *   yyy1 \0
+ *   yyy2 \0
+ *   \0		(block terminator)
+ *   \0		(list terminator)
  */
 	int i;
 
@@ -295,7 +305,7 @@ restart:
 		if (current_term->flags & TERM_DUMB) 
 		  print_entries_raw(num_entries, first_entry, menu_entries);
 		else
-		  print_border(MENU_ENTRY_X, MENU_SIZE);
+		  print_border(MENU_TOP, MENU_SIZE);
 
 		grub_printf("\n\
       Use the %c and %c keys to select which entry is highlighted.\n",
@@ -480,10 +490,19 @@ restart:
 					} else if (num_entries > 0) {	/* delete */
 						char *ptr = get_entry(menu_entries, first_entry + entryno + 1, 0);
 
-						grub_memmove(cur_entry, ptr, ((int) heap) - ((int) ptr));
-						heap -= (((int) ptr) - ((int) cur_entry));
+						if (num_entries == 1) {
+							grub_memmove(cur_entry + 2, ptr, ((int) heap) - ((int) ptr));
+							heap -= (((int) ptr) - ((int) cur_entry));
 
-						num_entries--;
+							cur_entry[0] = ' ';
+							cur_entry[1] = 0;
+							heap += 2;
+						} else {
+							grub_memmove(cur_entry, ptr, ((int) heap) - ((int) ptr));
+							heap -= (((int) ptr) - ((int) cur_entry));
+							num_entries--;
+						}
+
 
 						if (entryno >= num_entries)
 						  entryno--;
@@ -547,7 +566,7 @@ restart:
 						saved_partition = install_partition;
 						current_drive = GRUB_INVALID_DRIVE;
 
-						if (! get_cmdline(PACKAGE " edit> ", new_heap, NEW_HEAPSIZE + 1, 0, 0)) {
+						if (! get_cmdline(PACKAGE " edit> ", new_heap, NEW_HEAPSIZE + 1, 0, 1)) {
 							int j = 0;
 
 							/* get length of new command */
@@ -840,8 +859,8 @@ void cmain() {
 					config_len = prev_config_len;
 				}
 
-				menu_entries[menu_len++] = 0;
-				config_entries[config_len++] = 0;
+				menu_entries[menu_len++] = 0;	/* one more '\0' is as terminator */	
+				config_entries[config_len++] = 0;	/* one more '\0' is as terminator */
 				grub_memmove(config_entries + config_len, menu_entries, menu_len);
 				menu_entries = config_entries + config_len;
 

@@ -24,17 +24,11 @@ grub_OBJECTS = $(am_grub_OBJECTS)
 grub_DEPENDENCIES = ../stage2/libgrub.a ../lib/libcommon.a 
 HEADERS = *.h
 PROGRAMS = $(sbin_PROGRAMS)
-SERIAL_FLAGS = -DSUPPORT_SERIAL=1
-AM_CPPFLAGS = -DGRUB_UTIL=1 -DFSYS_EXT2FS=1 -DFSYS_FAT=1 -DFSYS_FFS=1 \
-			  -DFSYS_ISO9660=1 -DFSYS_JFS=1 -DFSYS_MINIX=1 -DFSYS_REISERFS=1 \
-			  -DFSYS_UFS2=1 -DFSYS_VSTAFS=1 -DFSYS_XFS=1 \
-			  -DUSE_MD5_PASSWORDS=1 -DSUPPORT_HERCULES=1 \
-			  $(SERIAL_FLAGS) -I$(top_srcdir)/stage2 \
-			  -I$(top_srcdir)/stage1 -I$(top_srcdir)/lib
+AM_CPPFLAGS = -DGRUB_UTIL=1 -DFSYS_EXT2FS=1 -DSUPPORT_HERCULES=1 \
+			  -I$(top_srcdir)/stage2 -I$(top_srcdir)/stage1 -I$(top_srcdir)/lib
 
 LIBS = 
 GRUB_LIBS = -lncurses
-#GRUB_LIBS = /lib32/libncurses.so.5.9 -L/lib32 -ltinfo
 grub_LDADD = ../stage2/libgrub.a  ../lib/libcommon.a $(GRUB_LIBS)
 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -49,7 +43,7 @@ all-am: Makefile $(PROGRAMS)
 
 
 grub$(EXEEXT): $(grub_OBJECTS) $(grub_DEPENDENCIES)
-	@rm -f grub$(EXEEXT)
+	@rm -f $@
 	$(LINK) $(grub_LDFLAGS) $(grub_OBJECTS) $(grub_LDADD) $(LIBS)
 
 .c.o:

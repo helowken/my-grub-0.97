@@ -42,8 +42,6 @@
 
 /* The type of kernel loaded. */
 kernel_t kernel_type;
-/* The boot device. */
-static int bootdev;
 /* True when the debug mode is turned on, and false
  * when it is turned off. */
 int debug = 0;
@@ -71,8 +69,6 @@ int show_menu = 1;
 /* Initialize the data for builtins. */
 void init_builtins() {
 	kernel_type = KERNEL_TYPE_NONE;
-	/* BSD and chainloading evil hacks! */
-	bootdev = set_bootdev(0);
 	mb_cmdline = (char *) MB_CMDLINE_BUF;
 }
 
@@ -1605,8 +1601,6 @@ static void print_root_device() {
 /* Setup SAVED_DRIVE and SAVED_PARTITION.
  */
 static int real_root_func(char *arg, int attempt_mount) {
-	int hdbias = 0;
-	char *biasptr;
 	char *next;
 
 	/* If ARG is empty, just print the current root device. */
@@ -1628,7 +1622,6 @@ static int real_root_func(char *arg, int attempt_mount) {
 		/* This is necessary, because the location of a partition table
 		 * must be set appropriately. */
 		if (open_partition()) {
-			set_bootdev(0);
 			if (errnum)
 			  return 1;
 		}
@@ -1640,14 +1633,6 @@ static int real_root_func(char *arg, int attempt_mount) {
 	saved_drive = current_drive;
 
 	if (attempt_mount) {
-		/* BSD and chainloading evil hacks !! */
-		biasptr = skip_to(0, next);
-		safe_parse_maxint(&biasptr, &hdbias);
-		errnum = 0;
-		bootdev = set_bootdev(hdbias);
-		if (errnum)
-		  return 1;
-
 		/* Print the type of the filesystem. */
 		print_fsys_type();
 	}

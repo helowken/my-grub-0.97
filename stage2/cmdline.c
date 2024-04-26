@@ -211,7 +211,7 @@ int run_script(char *script, char *heap) {
 		if (! *heap) {
 			/* If there is no more command in SCRIPT... */
 
-			/* If an y kernel is not loaded, just exit successfully. */
+			/* If any kernel is not loaded, just exit successfully. */
 			if (kernel_type == KERNEL_TYPE_NONE)
 			  return 0;
 
