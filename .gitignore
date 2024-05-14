@@ -1,0 +1,15 @@
+**/*.o
+**/*.exec
+**/*.a
+**/*.img
+grub/grub
+stage1/stage1
+stage2/e2fs_stage1_5
+stage2/pre_stage2
+stage2/stage2
+stage2/stage2_size.h
+stage2/start
+.booted
+.embedded
+.inited
+device/xxx
