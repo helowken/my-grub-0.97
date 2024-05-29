@@ -2,4 +2,4 @@ boot: disk
 ata0-master: type=disk, path="device/testOS.img"
 cpu: count=2:2
 memory: guest=2048, host=2048
-clock: sync=realtime, rtc_sync=1
+#clock: sync=realtime, rtc_sync=1

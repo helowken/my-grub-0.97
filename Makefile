@@ -10,10 +10,8 @@ stage1_5 = $(stage2_dir)/e2fs_stage1_5
 stage2 = $(stage2_dir)/stage2
 config_file = $(config_dir)/menu.lst
 default_file = $(config_dir)/default
-#kernel = /boot/vmlinuz-2.6.32-754.el6.x86_64
-#kernel = /home/kernel/linux-2.6.32/arch/x86/boot/bzImage
-#kernel = /home/test/linux/arch/x86/boot/bzImage
-#initrd = /boot/initramfs-2.6.32-754.el6.x86_64.img
+kernel = /home/test/linux/arch/x86/boot/bzImage
+initrd = /boot/initramfs-2.6.32_test.img
 embed_files = $(stage1) $(stage1_5) $(stage2) $(config_file) $(default_file)
 os_image = $(dev_dir)/testOS.img
 os_image_size=200
@@ -44,8 +42,8 @@ run: install
 debug: install
 	$(BOCHS) -q -f .bochsrc
 
-debug_qemu:
-	$(QEMU) -drive file=$(os_image) -s -S
+qemu: install
+	$(QEMU) -drive file=$(os_image) -cpu Haswell -s -S
 
 $(init_flag):
 	# create os_image 

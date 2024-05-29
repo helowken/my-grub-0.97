@@ -8,10 +8,10 @@
 #          initrd /initrd-[generic-]version.img
 
 default=0
-timeout=5
+timeout=0
 #splashimage=(hd0,0)/grub/splash.xpm.gz
 hiddenmenu
-title CentOS Linux 6 (2.6.32-754.el6.x86_64)
+title CentOS Linux 6 (2.6.32_test)
 	root (hd0,0)
-	kernel /bzImage ro root=UUID=cf8f78e8-39bd-4d9e-bb93-881142b18ef5 rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD SYSFONT=latarcyrheb-sun16 crashkernel=128M  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM noquiet
-	initrd /initramfs-2.6.32-754.el6.x86_64.img
+	kernel /bzImage ro root=/dev/ram rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD crashkernel=128M  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM noquiet
+	initrd /initramfs-2.6.32_test.img
