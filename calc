@@ -1,0 +1,124 @@
+#!/bin/bash
+
+if [[ $# -lt 1 ]]; then
+	echo "Usage: $0 inode_number"
+	exit 1
+fi
+
+ino=$1
+
+LBA=2048
+inodes_per_group=1976
+descs_per_block=32
+sector_size=512
+block_size=1024
+sectors_per_block=$(( $block_size / sector_size ))
+inodes_per_block=8
+desc_size=32
+inode_size=128
+bg_inode_table_off=8
+
+echo
+echo sector_size = $sector_size
+echo block_size = $block_size
+echo sectors_per_block = block_size / sector_size = $sectors_per_block
+echo inodes_per_group = $inodes_per_group
+echo descs_per_block = $descs_per_block
+echo inodes_per_block = $inodes_per_block
+echo group_desc_size = $group_desc_size
+echo bg_inode_table_off = $bg_inode_table_off
+echo inode_size = $inode_size
+echo ------------------------
+
+echo
+ino_bit=$(( $ino - 1 ))
+echo "ino_bit = ino - 1 = $ino - 1 = $ino_bit"
+group_id=$(( $ino_bit / $inodes_per_group ))
+echo "group_id = ino_bit / inodes_per_group = $ino_bit / $inodes_per_group = $group_id"
+group_desc=$(( $group_id / $descs_per_block ))
+echo "group_desc = group_id / descs_per_block = $group_id / $descs_per_block = $group_desc"
+desc=$(( $group_id % $descs_per_block ))
+echo "desc = group_id % descs_per_block = $group_id % $descs_per_block = $desc"
+group_off=$(( $group_desc + 2 ))
+echo "group_off = group_desc + 2 = $group_desc + 2 = $group_off"
+echo "gdp = (LBA + group_off * sectors_per_block) * sector_size"
+echo "    = ($LBA + $group_off * $sectors_per_block) * $sector_size"
+gdp=$(( ($LBA + $group_off * $sectors_per_block) * 512 ))
+echo "    = $gdp = `printf "0x%x" $gdp`"
+echo ------------------------
+
+echo
+ino_table_off=$(( $ino_bit % $inodes_per_group ))
+echo "ino_table_off = ino_bit % inodes_per_group = $ino_bit % $inodes_per_group = $ino_table_off"
+echo "ino_blk_pos = gdp[desc].bg_inode_table + ino_table_off / inodes_per_block"
+echo "            = gdp[$desc].bg_inode_table + $ino_table_off / $inodes_per_block"
+ino_blk_idx=$(( $ino_table_off / $inodes_per_block ))
+echo "            = gdp[$desc].bg_inode_table + $ino_blk_idx"
+
+echo
+echo "gdp[$desc].bg_inode_table = gdp + desc_size * desc + bg_inode_table_off"
+echo "                          = $gdp + $desc_size * $desc + $bg_inode_table_off"
+ino_blk_base_pos=$(( $gdp + $desc_size * $desc + $bg_inode_table_off ))
+echo "                          = $ino_blk_base_pos"
+
+echo
+bg_inode_table=`dd if=device/testOS.img bs=1 skip=$ino_blk_base_pos count=4 2>/dev/null | od -A n -t u4 | tr -d ' '`
+echo "After reading, gdp[$desc].bg_inode_table = $bg_inode_table"
+
+echo
+echo "ino_blk = gdp[$desc].bg_inode_table + $ino_blk_idx"
+echo "            = $bg_inode_table + $ino_blk_idx"
+ino_blk=$(( $bg_inode_table + $ino_blk_idx ))
+echo "            = $ino_blk"
+echo ------------------------
+
+echo
+ino_blk_off=$(( $ino_bit % $inodes_per_block ))
+echo "ino_blk_off = ino_bit % inodes_per_block = $ino_bit % $inodes_per_block = $ino_blk_off"
+echo "INODE_POS = (LBA + ino_blk * sectors_per_block) * sector_size"
+echo "          = ($LBA + $ino_blk * $sectors_per_block) * $sector_size"
+INODE_POS=$(( ($LBA + $ino_blk * $sectors_per_block) * $sector_size ))
+echo "          = $INODE_POS = `printf "0x%x" $INODE_POS`"
+
+echo
+echo "raw_inode = INODE[ino_blk_off] = INODE_POS + inode_size * ino_blk_off"
+echo "          = $INODE_POS + $inode_size * $ino_blk_off"
+raw_inode=$(( $INODE_POS + $inode_size * $ino_blk_off ))
+echo "          = $raw_inode = `printf "0x%x" $raw_inode`"
+echo
+
+echo ------------------------
+i_size_off=$(( $raw_inode + 4 ))
+echo "i_size_off = raw_inode + 4 = $raw_inode + 4 = $i_size_off"
+i_size=`dd if=device/testOS.img bs=1 skip=$i_size_off count=4 2>/dev/null | od -A n -t u4 | tr -d ' '`
+echo "After reading, i_size = $i_size"
+
+echo
+i_block_off=40
+i_block_0_pos=$(( $raw_inode + $i_block_off ))
+
+if [[ $i_size -le 60 ]]; then
+	echo "After reading i_block array:"
+	dd bs=1 skip=$i_block_0_pos count=$i_size if=device/testOS.img 2>/dev/null
+	echo
+else
+	echo "i_block_0_pos = raw_inode + i_block_off = $raw_inode + $i_block_off = $i_block_0_pos"
+	i_blk_0=`dd if=device/testOS.img bs=1 skip=$i_block_0_pos count=4 2>/dev/null | od -A n -t u4 | tr -d ' '`
+	echo "After reading, i_block_0 = $i_blk_0 = `printf "0x%x" $i_blk_0`"
+
+	echo
+	echo "offset = (LBA + i_block_0 * sectors_per_block) * sector_size"
+	echo "       = ($LBA + $i_blk_0 * $sectors_per_block) * $sector_size"
+	off=$(( ($LBA + $i_blk_0 * $sectors_per_block) * $sector_size ))
+	echo "       = $off = `printf "0x%x" $off`"
+	echo ------------------------
+
+	echo
+	echo "After reading i_block_0:"
+	dd bs=1 skip=$off count=1024 if=device/testOS.img 2>/dev/null
+	echo
+	echo
+fi
+
+
+

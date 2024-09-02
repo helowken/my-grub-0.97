@@ -1,0 +1,15 @@
+#!/bin/bash
+
+dist='my-grub-0.97.tar'
+file=".gitignore"
+
+# Read the file line by line
+while IFS= read -r line; do
+	exclude_option="--exclude=\"$line\""
+	exclude_string="$exclude_string $exclude_option"
+done < $file 
+
+rm -f $dist
+
+cmd="tar -cvf ../$dist $exclude_string *"
+eval "$cmd"

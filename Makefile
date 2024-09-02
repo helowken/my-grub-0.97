@@ -6,11 +6,14 @@ stage1_dir = stage1
 stage2_dir = stage2
 config_dir = config
 stage1 = $(stage1_dir)/stage1
+stage1_exec = $(stage1).exec
 stage1_5 = $(stage2_dir)/e2fs_stage1_5
 stage2 = $(stage2_dir)/stage2
 config_file = $(config_dir)/menu.lst
 default_file = $(config_dir)/default
-kernel = /home/test/linux/arch/x86/boot/bzImage
+linux_home = /home/kernel/linux-2.6.32
+kernel = $(linux_home)/arch/x86/boot/bzImage
+vmlinux = $(linux_home)/vmlinux
 initrd = /boot/initramfs-2.6.32_test.img
 embed_files = $(stage1) $(stage1_5) $(stage2) $(config_file) $(default_file)
 os_image = $(dev_dir)/testOS.img
@@ -23,9 +26,16 @@ init_flag = .inited
 boot_flag = .booted
 embed_flag = .embedded
 
-BOCHS = $(top_dir)/bochs/build/normal/bin/bochs
-QEMU = $(top_dir)/qemu/qemu-1.4.0/x86_64-softmmu/qemu-system-x86_64
 INSTALL_SCRIPT = _install
+
+BOCHS = $(top_dir)/bochs/build/normal/bin/bochs
+
+QEMU = $(top_dir)/qemu/qemu-1.4.0/x86_64-softmmu/qemu-system-x86_64
+QEMU_OPTS = -m 6144 -drive file=$(os_image) -cpu Haswell \
+			-smp sockets=1,cores=2,threads=2 \
+			-numa node,cpus=0-1,nodeid=0 \
+			-numa node,cpus=2-3,nodeid=1 \
+			-smbios type=1
 
 all: build
 
@@ -37,13 +47,32 @@ build:
 
 run: install
 	$(BOCHS) -q -f .bochsrc
-	#$(QEMU) -drive file=$(os_image)
+
+qemu: install
+	$(QEMU) $(QEMU_OPTS)
 
 debug: install
 	$(BOCHS) -q -f .bochsrc
 
-qemu: install
-	$(QEMU) -drive file=$(os_image) -cpu Haswell -s -S
+debug_qemu: install
+	$(QEMU) $(QEMU_OPTS) -s -S 
+
+gdb_linux:
+	gdb -ex "file $(vmlinux)" \
+		-ex 'set arch i386:x86-64:intel' \
+		-ex 'target remote localhost:1234' \
+		-ex 'break x86_64_start_kernel' \
+		-ex 'continue' \
+		-ex 'disconnect' \
+		-ex 'set arch i386:x86-64' \
+		-ex 'target remote localhost:1234'
+
+gdb_stage1:
+	gdb -ex "file $(stage1_exec)" \
+		-ex 'target remote localhost:1234' \
+		-ex 'break *0x7c00' \
+		-ex 'continue' \
+
 
 $(init_flag):
 	# create os_image 
@@ -77,7 +106,8 @@ $(embed_flag): $(init_flag) $(boot_flag) $(embed_files)
 install: $(embed_flag)
 	:
 
-.PHONY: clean_all clean_dev clean
+.PHONY: clean_all clean_dev clean gdb_qemu gdb_grub
+
 
 clean_dev:
 	-rm -f $(os_image) $(init_flag) $(embed_flag)
