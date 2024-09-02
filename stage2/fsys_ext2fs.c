@@ -235,7 +235,6 @@ static __inline__ unsigned long ffz(unsigned long word) {
 
 /* check filesystem types and read superblock into memory buffer */
 int ext2fs_mount() {
-	struct ext2_super_block *p = SUPERBLOCK;
 	int retval = 1;
 
 	if ((((current_drive & 0x80) || (current_slice != 0)) &&
@@ -244,7 +243,7 @@ int ext2fs_mount() {
 					(! IS_PC_SLICE_TYPE_BSD_WITH_FS(current_slice, FS_EXT2FS)) &&
 					(! IS_PC_SLICE_TYPE_BSD_WITH_FS(current_slice, FS_OTHER)))
 			|| part_length < (SBLOCK + (sizeof(struct ext2_super_block) / DEV_BSIZE))
-			|| ! devread(SBLOCK, 0, sizeof(struct ext2_super_block), (char *) p)
+			|| ! devread(SBLOCK, 0, sizeof(struct ext2_super_block), (char *) SUPERBLOCK)
 			|| SUPERBLOCK->s_magic != EXT2_SUPER_MAGIC)
 	  retval = 0;
 

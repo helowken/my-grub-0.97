@@ -45,14 +45,11 @@ build:
 	-cd $(stage2_dir) && $(MAKE)
 	-cd $(grub_dir) && $(MAKE)
 
-run: install
+bochs: install
 	$(BOCHS) -q -f .bochsrc
 
 qemu: install
 	$(QEMU) $(QEMU_OPTS)
-
-debug: install
-	$(BOCHS) -q -f .bochsrc
 
 debug_qemu: install
 	$(QEMU) $(QEMU_OPTS) -s -S 
