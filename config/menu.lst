@@ -9,9 +9,8 @@
 
 default=0
 timeout=0
-#splashimage=(hd0,0)/grub/splash.xpm.gz
 hiddenmenu
-title CentOS Linux 6 (2.6.32_test)
+title CentOS Linux 6 (2.6.32.27_xxx)
 	root (hd0,0)
 	kernel /bzImage ro root=/dev/ram rd_NO_LUKS rd_NO_LVM LANG=en_US.UTF-8 rd_NO_MD crashkernel=128M  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM noquiet
-	initrd /initramfs-2.6.32_test.img
+	initrd /initramfs-2.6.32.27_xxx.img

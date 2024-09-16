@@ -11,10 +11,10 @@ stage1_5 = $(stage2_dir)/e2fs_stage1_5
 stage2 = $(stage2_dir)/stage2
 config_file = $(config_dir)/menu.lst
 default_file = $(config_dir)/default
-linux_home = /home/kernel/linux-2.6.32
+linux_home = /home/kernel/my-linux
 kernel = $(linux_home)/arch/x86/boot/bzImage
 vmlinux = $(linux_home)/vmlinux
-initrd = /boot/initramfs-2.6.32_test.img
+initrd = $(linux_home)/initramfs-2.6.32.27_xxx.img
 embed_files = $(stage1) $(stage1_5) $(stage2) $(config_file) $(default_file)
 os_image = $(dev_dir)/testOS.img
 os_image_size=200
@@ -36,6 +36,10 @@ QEMU_OPTS = -m 6144 -drive file=$(os_image) -cpu Haswell \
 			-numa node,cpus=0-1,nodeid=0 \
 			-numa node,cpus=2-3,nodeid=1 \
 			-smbios type=1
+
+#			-smp sockets=1,cores=1,threads=1 \
+#			-numa node,cpus=0,nodeid=0
+
 
 all: build
 
@@ -77,7 +81,7 @@ $(init_flag):
 	-dd if=$(part_table) of=$(os_image) conv=notrunc
 	-touch $@
 
-$(boot_flag): $(kernel)
+$(boot_flag): $(kernel) $(initrd)
 	# create boot disk
 	-dd if=/dev/zero of=$(boot_disk) bs=1024k count=0 seek=100
 	-mke2fs -t ext3 -F $(boot_disk)
