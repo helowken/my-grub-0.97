@@ -35,7 +35,9 @@ QEMU_OPTS = -m 6144 -drive file=$(os_image) -cpu Haswell \
 			-smp sockets=1,cores=2,threads=2 \
 			-numa node,cpus=0-1,nodeid=0 \
 			-numa node,cpus=2-3,nodeid=1 \
-			-smbios type=1
+			-smbios type=1 \
+			-rtc base=localtime -global pit.model=accurate -icount shift=auto
+
 
 #			-smp sockets=1,cores=1,threads=1 \
 #			-numa node,cpus=0,nodeid=0
@@ -66,7 +68,8 @@ gdb_linux:
 		-ex 'continue' \
 		-ex 'disconnect' \
 		-ex 'set arch i386:x86-64' \
-		-ex 'target remote localhost:1234'
+		-ex 'target remote localhost:1234' \
+		-ex 'set print pretty on'
 
 gdb_stage1:
 	gdb -ex "file $(stage1_exec)" \
