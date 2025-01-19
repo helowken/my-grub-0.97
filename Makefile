@@ -69,6 +69,7 @@ gdb_linux:
 		-ex 'disconnect' \
 		-ex 'set arch i386:x86-64' \
 		-ex 'target remote localhost:1234' \
+		-ex 'set print array on' \
 		-ex 'set print pretty on'
 
 gdb_stage1:
